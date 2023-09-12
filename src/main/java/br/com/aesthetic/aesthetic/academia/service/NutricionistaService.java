@@ -14,6 +14,5 @@ public interface NutricionistaService {
 
     Nutricionista save(Nutricionista nutricionista);
 
-    Nutricionista update(Nutricionista nutricionista);
-
+    Nutricionista update(Nutricionista nutricionista, Long id);
 }

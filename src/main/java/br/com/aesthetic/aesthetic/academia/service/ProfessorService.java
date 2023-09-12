@@ -13,5 +13,5 @@ public interface ProfessorService {
 
     Professor save(Professor professor);
 
-    Professor update(Professor professor);
+    Professor update(Professor professor, Long id);
 }

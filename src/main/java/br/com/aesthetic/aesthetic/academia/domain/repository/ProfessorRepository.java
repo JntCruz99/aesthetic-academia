@@ -4,4 +4,5 @@ import br.com.aesthetic.aesthetic.academia.domain.model.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProfessorRepository extends JpaRepository<Professor, Long> {
+    boolean existsByMatricula (String matricula);
 }
