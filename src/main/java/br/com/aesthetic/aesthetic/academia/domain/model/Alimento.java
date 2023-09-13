@@ -19,6 +19,16 @@ public class Alimento implements Serializable {
     @JoinColumn(name = "dieta_id")
     private Dieta dieta;
 
+    public Alimento(String alimento, String quantidade, int caloria, Dieta dieta) {
+        this.alimento = alimento;
+        this.quantidade = quantidade;
+        this.caloria = caloria;
+        this.dieta = dieta;
+    }
+
+    public Alimento() {
+    }
+
     public Long getId() {
         return id;
     }

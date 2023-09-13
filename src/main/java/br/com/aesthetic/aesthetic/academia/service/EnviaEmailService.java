@@ -6,6 +6,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,7 @@ public class EnviaEmailService {
         this.javaMailSender = javaMailSender;
     }
 
+    @Async
     public void enviar(String para, String titulo, String conteudo) {
         log.info("Enviando email simples");
 
@@ -29,6 +31,7 @@ public class EnviaEmailService {
         javaMailSender.send(mensagem);
         log.info("Email enviado com sucesso!");
     }
+
 
     public void enviarEmailComAnexo(String para, String titulo, String conteudo, String arquivo) throws MessagingException {
         log.info("Enviando email com anexo");

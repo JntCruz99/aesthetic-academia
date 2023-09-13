@@ -43,6 +43,23 @@ public class Dieta implements Serializable {
     @OneToMany(mappedBy = "dieta")
     private List<Alimento> posTreino;
 
+    public Dieta() {
+    }
+
+    public Dieta(int caloriasDiarias, String descricao, Aluno aluno, Nutricionista nutricionista, List<Alimento> cafeDaManha, List<Alimento> lancheDaManha, List<Alimento> almoco, List<Alimento> lancheDaTarde, List<Alimento> janta, List<Alimento> preTreino, List<Alimento> posTreino) {
+        this.caloriasDiarias = caloriasDiarias;
+        this.descricao = descricao;
+        this.aluno = aluno;
+        this.nutricionista = nutricionista;
+        this.cafeDaManha = cafeDaManha;
+        this.lancheDaManha = lancheDaManha;
+        this.almoco = almoco;
+        this.lancheDaTarde = lancheDaTarde;
+        this.janta = janta;
+        this.preTreino = preTreino;
+        this.posTreino = posTreino;
+    }
+
     public Long getId() {
         return id;
     }

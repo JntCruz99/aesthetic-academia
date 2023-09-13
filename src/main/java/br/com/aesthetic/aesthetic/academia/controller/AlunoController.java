@@ -1,6 +1,7 @@
 package br.com.aesthetic.aesthetic.academia.controller;
 
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
+import br.com.aesthetic.aesthetic.academia.domain.model.Dieta;
 import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
 import jakarta.transaction.Transactional;
@@ -39,6 +40,12 @@ public class AlunoController {
     @PutMapping("/{id}")
     public ResponseEntity<Aluno> alunoPut(@PathVariable Long id, @RequestBody Aluno aluno){
         return ResponseEntity.status(HttpStatus.OK).body(alunoService.update(aluno,id));
+    }
+
+    //POSTAR DIETAS
+    @PostMapping("/{idAluno}/{idNutricionista}")
+    public ResponseEntity<Aluno> createDieta(@PathVariable Long idAluno, @PathVariable Long idNutricionista, @RequestBody Dieta dieta){
+        return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.createDieta(idAluno, idNutricionista, dieta));
     }
 
 }

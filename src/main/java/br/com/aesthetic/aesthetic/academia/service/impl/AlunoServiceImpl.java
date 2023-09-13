@@ -1,8 +1,14 @@
 package br.com.aesthetic.aesthetic.academia.service.impl;
 
+import br.com.aesthetic.aesthetic.academia.domain.model.Alimento;
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
+import br.com.aesthetic.aesthetic.academia.domain.model.Dieta;
+import br.com.aesthetic.aesthetic.academia.domain.model.Nutricionista;
+import br.com.aesthetic.aesthetic.academia.domain.repository.AlimentoRepository;
 import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
+import br.com.aesthetic.aesthetic.academia.domain.repository.DietaRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
+import br.com.aesthetic.aesthetic.academia.service.NutricionistaService;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.DuplicateEnrollmentException;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.EntityNotFoundExceptions;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +17,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +29,15 @@ public class AlunoServiceImpl implements AlunoService {
     private JavaMailSender javaMailSender;
     @Autowired
     private final AlunoRepository alunoRepository;
+
+    @Autowired
+    private NutricionistaService nutricionistaService;
+
+    @Autowired
+    private DietaRepository dietaRepository;
+
+    @Autowired
+    private AlimentoRepository alimentoRepository;
 
     public AlunoServiceImpl(AlunoRepository alunoRepository) {
         this.alunoRepository = alunoRepository;
@@ -80,6 +96,33 @@ public class AlunoServiceImpl implements AlunoService {
          }
 
         return alunoRepository.save(alunoOptional);
+    }
+
+    @Override
+    public Aluno createDieta(Long idAluno, Long idNutricionista, Dieta dieta) {
+        Aluno aluno = findById(idAluno);
+        Nutricionista nutricionista = nutricionistaService.findById(idNutricionista);
+        List<Dieta> dietaList = new ArrayList<>();
+        dietaList.add(dieta);
+        aluno.setDietas(dietaList);
+        List<Alimento> alimentoList = new ArrayList<>();
+        alimentoList.add(dieta.getAlmoco().get(0));
+        alimentoRepository.save(dieta.getAlmoco().get(0));
+        dietaRepository.save(dieta);
+        alunoRepository.save(aluno);
+
+        log.info("Enviando email simples");
+
+        var mensagem = new SimpleMailMessage();
+        mensagem.setTo(aluno.getEmail());
+
+        mensagem.setSubject("Sua dieta foi Atualizada " + aluno.getNome());
+        mensagem.setText("Parabens sua dieta foi atualizada para vc alcançar novas metas " + aluno.getNome()+
+                "\nAlmoço: "+ dieta.getAlmoco());
+        javaMailSender.send(mensagem);
+        log.info("email Enviado!!");
+
+        return aluno;
     }
 
 
