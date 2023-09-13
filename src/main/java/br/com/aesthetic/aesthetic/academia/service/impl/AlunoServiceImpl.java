@@ -5,15 +5,21 @@ import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.DuplicateEnrollmentException;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.EntityNotFoundExceptions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AlunoServiceImpl implements AlunoService {
 
+    @Autowired
+    private JavaMailSender javaMailSender;
     @Autowired
     private final AlunoRepository alunoRepository;
 
@@ -38,6 +44,15 @@ public class AlunoServiceImpl implements AlunoService {
             throw new DuplicateEnrollmentException("Matrícula já existe: " + aluno.getMatricula());
         }
         aluno.setAtivo(true);
+        log.info("Enviando email simples");
+
+        var mensagem = new SimpleMailMessage();
+        mensagem.setTo(aluno.getEmail());
+
+        mensagem.setSubject("Bem vindo(a) a academia aesthetic " + aluno.getNome());
+        mensagem.setText("Estamos muito feliz em termos você conosco " + aluno.getNome());
+        javaMailSender.send(mensagem);
+        log.info("email Enviado!!");
         return alunoRepository.save(aluno);
     }
 

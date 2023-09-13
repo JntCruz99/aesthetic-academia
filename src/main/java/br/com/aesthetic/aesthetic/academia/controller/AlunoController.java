@@ -4,9 +4,12 @@ import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
 import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/alunos")
 public class AlunoController {
+
 
     @Autowired
     private AlunoService alunoService;
