@@ -68,5 +68,15 @@ public class Alimento implements Serializable {
     public void setDieta(Dieta dieta) {
         this.dieta = dieta;
     }
+
+    @Override
+    public String toString() {
+        return "Alimento{" +
+                ", alimento='" + alimento + '\'' +
+                ", quantidade='" + quantidade + '\'' +
+                ", caloria=" + caloria +
+                ", dieta=" + dieta +
+                '}';
+    }
 }
 

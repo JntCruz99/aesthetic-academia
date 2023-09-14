@@ -155,5 +155,22 @@ public class Dieta implements Serializable {
     public void setPosTreino(List<Alimento> posTreino) {
         this.posTreino = posTreino;
     }
+
+    @Override
+    public String toString() {
+        return "Dieta{" +
+                "caloriasDiarias=" + caloriasDiarias +
+                ", descricao='" + descricao + '\'' +
+                ", aluno=" + aluno +
+                ", nutricionista=" + nutricionista +
+                ", cafeDaManha=" + cafeDaManha +
+                ", lancheDaManha=" + lancheDaManha +
+                ", almoco=" + almoco +
+                ", lancheDaTarde=" + lancheDaTarde +
+                ", janta=" + janta +
+                ", preTreino=" + preTreino +
+                ", posTreino=" + posTreino +
+                '}';
+    }
 }
 

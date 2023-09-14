@@ -105,9 +105,13 @@ public class AlunoServiceImpl implements AlunoService {
         List<Dieta> dietaList = new ArrayList<>();
         dietaList.add(dieta);
         aluno.setDietas(dietaList);
-        List<Alimento> alimentoList = new ArrayList<>();
-        alimentoList.add(dieta.getAlmoco().get(0));
-        alimentoRepository.save(dieta.getAlmoco().get(0));
+        alimentoRepository.saveAll(dieta.getAlmoco());
+        alimentoRepository.saveAll(dieta.getJanta());
+        alimentoRepository.saveAll(dieta.getCafeDaManha());
+        alimentoRepository.saveAll(dieta.getPosTreino());
+        alimentoRepository.saveAll(dieta.getPreTreino());
+        alimentoRepository.saveAll(dieta.getLancheDaManha());
+        alimentoRepository.saveAll(dieta.getLancheDaTarde());
         dietaRepository.save(dieta);
         alunoRepository.save(aluno);
 
@@ -118,7 +122,7 @@ public class AlunoServiceImpl implements AlunoService {
 
         mensagem.setSubject("Sua dieta foi Atualizada " + aluno.getNome());
         mensagem.setText("Parabens sua dieta foi atualizada para vc alcançar novas metas " + aluno.getNome()+
-                "\nAlmoço: "+ dieta.getAlmoco());
+                "\n"+ dieta);
         javaMailSender.send(mensagem);
         log.info("email Enviado!!");
 
