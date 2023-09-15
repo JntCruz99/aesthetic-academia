@@ -8,6 +8,7 @@ import br.com.aesthetic.aesthetic.academia.domain.repository.AlimentoRepository;
 import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
 import br.com.aesthetic.aesthetic.academia.domain.repository.DietaRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
+import br.com.aesthetic.aesthetic.academia.service.EnviaEmailService;
 import br.com.aesthetic.aesthetic.academia.service.NutricionistaService;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.DuplicateEnrollmentException;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.EntityNotFoundExceptions;
@@ -27,6 +28,10 @@ public class AlunoServiceImpl implements AlunoService {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Autowired
+    private EnviaEmailService enviaEmailService;
+
     @Autowired
     private final AlunoRepository alunoRepository;
 
@@ -60,15 +65,9 @@ public class AlunoServiceImpl implements AlunoService {
             throw new DuplicateEnrollmentException("Matrícula já existe: " + aluno.getMatricula());
         }
         aluno.setAtivo(true);
-        log.info("Enviando email simples");
 
-        var mensagem = new SimpleMailMessage();
-        mensagem.setTo(aluno.getEmail());
+        enviaEmailService.enviar(aluno.getEmail(),"Bem vindo(a) a academia aesthetic " + aluno.getNome(),"Estamos muito feliz em termos você conosco " + aluno.getNome());
 
-        mensagem.setSubject("Bem vindo(a) a academia aesthetic " + aluno.getNome());
-        mensagem.setText("Estamos muito feliz em termos você conosco " + aluno.getNome());
-        javaMailSender.send(mensagem);
-        log.info("email Enviado!!");
         return alunoRepository.save(aluno);
     }
 
@@ -115,16 +114,9 @@ public class AlunoServiceImpl implements AlunoService {
         dietaRepository.save(dieta);
         alunoRepository.save(aluno);
 
-        log.info("Enviando email simples");
-
-        var mensagem = new SimpleMailMessage();
-        mensagem.setTo(aluno.getEmail());
-
-        mensagem.setSubject("Sua dieta foi Atualizada " + aluno.getNome());
-        mensagem.setText("Parabens sua dieta foi atualizada para vc alcançar novas metas " + aluno.getNome()+
-                "\n"+ dieta);
-        javaMailSender.send(mensagem);
-        log.info("email Enviado!!");
+        enviaEmailService.enviar(aluno.getEmail(),"Sua dieta foi Atualizada " + aluno.getNome(),
+                "Parabens sua dieta foi atualizada para vc alcançar novas metas " + aluno.getNome()+
+                        "\n"+ dieta);
 
         return aluno;
     }
