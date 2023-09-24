@@ -2,6 +2,7 @@ package br.com.aesthetic.aesthetic.academia.service;
 
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +16,12 @@ import java.io.FileOutputStream;
 @Slf4j
 public class PdfService {
 
-    @Value("${pdf.output.directory}")
-    private String pdfOutputDirectory;
     public void gerarPDF(Aluno aluno, String nomeArquivo) {
-        String caminhoCompleto = pdfOutputDirectory + File.separator + nomeArquivo;
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(caminhoCompleto)); // Use o caminho completo aqui
+            PdfWriter.getInstance(document, new FileOutputStream(nomeArquivo));
             document.open();
-            document.add(new Paragraph("Informações do Aluno")); // Corrigi a mensagem
+            document.add(new Paragraph("Informações do Paciente"));
             document.add(new Paragraph("Nome: " + aluno.getNome()));
             document.add(new Paragraph("Idade: " + aluno.getIdade()));
             document.add(new Paragraph("Endereço: " + aluno.getEndereco()));
