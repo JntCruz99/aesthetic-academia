@@ -10,6 +10,7 @@ import br.com.aesthetic.aesthetic.academia.domain.repository.DietaRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
 import br.com.aesthetic.aesthetic.academia.service.EnviaEmailService;
 import br.com.aesthetic.aesthetic.academia.service.NutricionistaService;
+import br.com.aesthetic.aesthetic.academia.service.PdfService;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.DuplicateEnrollmentException;
 import br.com.aesthetic.aesthetic.academia.service.exceptions.EntityNotFoundExceptions;
 import jakarta.mail.MessagingException;
@@ -45,6 +46,9 @@ public class AlunoServiceImpl implements AlunoService {
     @Autowired
     private AlimentoRepository alimentoRepository;
 
+    @Autowired
+    private PdfService pdfService;
+
     public AlunoServiceImpl(AlunoRepository alunoRepository) {
         this.alunoRepository = alunoRepository;
     }
@@ -66,6 +70,8 @@ public class AlunoServiceImpl implements AlunoService {
             throw new DuplicateEnrollmentException("Matrícula já existe: " + aluno.getMatricula());
         }
         aluno.setAtivo(true);
+        String nomeArquivo = "aluno-"+aluno.getNome();
+        pdfService.gerarPDF(aluno, nomeArquivo);
 
         enviaEmailService.enviar(aluno,"Bem vindo(a) a academia aesthetic " + aluno.getNome(),"Estamos muito feliz em termos você conosco " + aluno.getNome());
 

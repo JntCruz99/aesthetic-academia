@@ -2,11 +2,11 @@ package br.com.aesthetic.aesthetic.academia.service;
 
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,16 +19,10 @@ import java.io.File;
 @Slf4j
 public class EnviaEmailService {
 
-    @Value("${pdf.output.directory}")
-    private String pdfOutputDirectory;
-    private final JavaMailSender javaMailSender;
-
-    public EnviaEmailService(final JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
-
     @Autowired
-    private PdfService pdfService;
+    private  JavaMailSender javaMailSender;
+    @Autowired
+    private  PdfService pdfService;
 
     @Async
     public void enviarR(String para, String titulo, String conteudo) {
@@ -44,23 +38,22 @@ public class EnviaEmailService {
     }
 
     @Async
+    @Transactional
     public void enviar(Aluno aluno, String titulo, String conteudo) throws MessagingException {
         log.info("Enviando email com anexo");
+
+        // Gere o arquivo PDF após a atualização do contexto
+        String nomeArquivo = "aluno-"+aluno.getNome();
+
         var mensagem = javaMailSender.createMimeMessage();
-
         var helper = new MimeMessageHelper(mensagem, true);
-        String nomeArquivo = "aluno_" + aluno.getNome() + ".pdf";
-
-        // Gere o PDF e obtenha o caminho completo
-        String caminhoCompleto = pdfOutputDirectory + File.separator + nomeArquivo;
-        pdfService.gerarPDF(aluno, caminhoCompleto);
 
         helper.setTo(aluno.getEmail());
         helper.setSubject(titulo);
         helper.setText(conteudo, true);
 
-        // Use o caminho completo ao adicionar o anexo
-        helper.addAttachment(nomeArquivo, new FileSystemResource(caminhoCompleto));
+        // Adicione o anexo após o arquivo PDF ser gerado
+        helper.addAttachment("aluno.pdf", new ClassPathResource("PDFS/"+nomeArquivo + ".pdf"));
 
         javaMailSender.send(mensagem);
         log.info("Email com anexo enviado com sucesso.");

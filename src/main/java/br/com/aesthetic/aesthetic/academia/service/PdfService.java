@@ -16,16 +16,23 @@ import java.io.FileOutputStream;
 @Slf4j
 public class PdfService {
 
+    @Value("${pdf.output.directory}")
+    private String pdfOutputDirectory;
+
     public void gerarPDF(Aluno aluno, String nomeArquivo) {
+        log.info("gerando pdf");
+        nomeArquivo = nomeArquivo+".pdf";
+        String caminhoCompleto = pdfOutputDirectory + File.separator + nomeArquivo;
         Document document = new Document();
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(nomeArquivo));
+            PdfWriter.getInstance(document, new FileOutputStream(caminhoCompleto));
             document.open();
             document.add(new Paragraph("Informações do Paciente"));
             document.add(new Paragraph("Nome: " + aluno.getNome()));
             document.add(new Paragraph("Idade: " + aluno.getIdade()));
             document.add(new Paragraph("Endereço: " + aluno.getEndereco()));
             document.close();
+            log.info("pdf gerado");
         } catch (Exception e) {
             e.printStackTrace();
         }
