@@ -20,6 +20,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -65,14 +66,11 @@ public class AlunoServiceImpl implements AlunoService {
     }
 
     @Override
-    public Aluno save(Aluno aluno) throws MessagingException {
+    public Aluno save(Aluno aluno) throws MessagingException, IOException {
         if (alunoRepository.existsByMatricula(aluno.getMatricula())) {
             throw new DuplicateEnrollmentException("Matrícula já existe: " + aluno.getMatricula());
         }
         aluno.setAtivo(true);
-        String nomeArquivo = "aluno-"+aluno.getNome();
-        pdfService.gerarPDF(aluno, nomeArquivo);
-
         enviaEmailService.enviar(aluno,"Bem vindo(a) a academia aesthetic " + aluno.getNome(),"Estamos muito feliz em termos você conosco " + aluno.getNome());
 
         return alunoRepository.save(aluno);
@@ -105,7 +103,7 @@ public class AlunoServiceImpl implements AlunoService {
     }
 
     @Override
-    public Aluno createDieta(Long idAluno, Long idNutricionista, Dieta dieta) throws MessagingException {
+    public Aluno createDieta(Long idAluno, Long idNutricionista, Dieta dieta) throws MessagingException, IOException {
         Aluno aluno = findById(idAluno);
         Nutricionista nutricionista = nutricionistaService.findById(idNutricionista);
         List<Dieta> dietaList = new ArrayList<>();

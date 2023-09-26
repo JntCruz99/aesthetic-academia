@@ -14,6 +14,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class AlunoController {
         return ResponseEntity.status(HttpStatus.OK).body(alunoService.findById(id));
     }
     @PostMapping
-    public ResponseEntity<Aluno> alunoCreated(@RequestBody Aluno aluno) throws MessagingException {
+    public ResponseEntity<Aluno> alunoCreated(@RequestBody Aluno aluno) throws MessagingException, IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.save(aluno));
     }
     @PutMapping("/{id}")
@@ -45,7 +46,7 @@ public class AlunoController {
 
     //POSTAR DIETAS
     @PostMapping("/{idAluno}/{idNutricionista}")
-    public ResponseEntity<Aluno> createDieta(@PathVariable Long idAluno, @PathVariable Long idNutricionista, @RequestBody Dieta dieta) throws MessagingException {
+    public ResponseEntity<Aluno> createDieta(@PathVariable Long idAluno, @PathVariable Long idNutricionista, @RequestBody Dieta dieta) throws MessagingException, IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.createDieta(idAluno, idNutricionista, dieta));
     }
 

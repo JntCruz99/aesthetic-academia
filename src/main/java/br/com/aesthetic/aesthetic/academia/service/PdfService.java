@@ -38,16 +38,4 @@ public class PdfService {
         }
     }
 
-    public void deletarPDF(String nomeArquivo) {
-        File pdfFile = new File(nomeArquivo);
-        if (pdfFile.exists()) {
-            if (pdfFile.delete()) {
-                System.out.println("O arquivo PDF foi excluído com sucesso.");
-            } else {
-                System.out.println("Não foi possível excluir o arquivo PDF.");
-            }
-        } else {
-            System.out.println("O arquivo PDF não foi encontrado.");
-        }
-    }
 }
