@@ -2,6 +2,7 @@ package br.com.aesthetic.aesthetic.academia.controller;
 
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
 import br.com.aesthetic.aesthetic.academia.domain.model.Dieta;
+import br.com.aesthetic.aesthetic.academia.domain.model.Treino;
 import br.com.aesthetic.aesthetic.academia.domain.repository.AlunoRepository;
 import br.com.aesthetic.aesthetic.academia.service.AlunoService;
 import jakarta.mail.MessagingException;
@@ -45,9 +46,14 @@ public class AlunoController {
     }
 
     //POSTAR DIETAS
-    @PostMapping("/{idAluno}/{idNutricionista}")
-    public ResponseEntity<Aluno> createDieta(@PathVariable Long idAluno, @PathVariable Long idNutricionista, @RequestBody Dieta dieta) throws MessagingException, IOException {
+    @PostMapping("dietas/{idAluno}/{idNutricionista}")
+    public ResponseEntity<Aluno> createDieta(@PathVariable Long idAluno, @PathVariable Long idNutricionista, @RequestBody Dieta dieta) throws MessagingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.createDieta(idAluno, idNutricionista, dieta));
+    }
+
+    @PostMapping("treinos/{idAluno}/{idProfessor}")
+    public ResponseEntity<Aluno> createTreino(@PathVariable Long idAluno, @PathVariable Long idProfessor, @RequestBody Treino treino) throws MessagingException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(alunoService.createTreino(idAluno, idProfessor, treino));
     }
 
 }

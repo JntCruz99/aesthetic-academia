@@ -11,7 +11,7 @@ public class Alimento implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String alimento;
-    private String quantidade;
+    private String medida;
     private int caloria;
 
     @ManyToOne
@@ -19,9 +19,9 @@ public class Alimento implements Serializable {
     @JoinColumn(name = "dieta_id")
     private Dieta dieta;
 
-    public Alimento(String alimento, String quantidade, int caloria, Dieta dieta) {
+    public Alimento(String alimento, String medida, int caloria, Dieta dieta) {
         this.alimento = alimento;
-        this.quantidade = quantidade;
+        this.medida = medida;
         this.caloria = caloria;
         this.dieta = dieta;
     }
@@ -45,12 +45,12 @@ public class Alimento implements Serializable {
         this.alimento = alimento;
     }
 
-    public String getQuantidade() {
-        return quantidade;
+    public String getMedida() {
+        return medida;
     }
 
-    public void setQuantidade(String quantidade) {
-        this.quantidade = quantidade;
+    public void setMedida(String medida) {
+        this.medida = medida;
     }
 
     public int getCaloria() {
@@ -73,7 +73,7 @@ public class Alimento implements Serializable {
     public String toString() {
         return "Alimento{" +
                 ", alimento='" + alimento + '\'' +
-                ", quantidade='" + quantidade + '\'' +
+                ", quantidade='" + medida + '\'' +
                 ", caloria=" + caloria +
                 ", dieta=" + dieta +
                 '}';

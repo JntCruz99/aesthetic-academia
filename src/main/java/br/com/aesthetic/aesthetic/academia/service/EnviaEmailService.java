@@ -1,13 +1,11 @@
 package br.com.aesthetic.aesthetic.academia.service;
 
 import br.com.aesthetic.aesthetic.academia.domain.model.Aluno;
+import br.com.aesthetic.aesthetic.academia.domain.model.Dieta;
+import br.com.aesthetic.aesthetic.academia.domain.model.Treino;
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -27,7 +25,7 @@ public class EnviaEmailService {
     private  PdfService pdfService;
 
     @Async
-    public void enviarR(String para, String titulo, String conteudo) {
+    public void enviarTextoSimples(String para, String titulo, String conteudo) {
         log.info("Enviando email simples");
 
         var mensagem = new SimpleMailMessage();
@@ -39,17 +37,13 @@ public class EnviaEmailService {
         log.info("Email enviado com sucesso!");
     }
 
-
-    public void enviar(Aluno aluno, String titulo, String conteudo) throws MessagingException, IOException {
+    @Async
+    public void enviarBoasVindas(Aluno aluno, String titulo, String conteudo) throws MessagingException {
         log.info("Enviando email com anexo");
 
-        String nomeArquivo = "aluno_" + aluno.getMatricula();
-
+        String nomeArquivo = "aluno_BOASV" + aluno.getMatricula();
         // Gere o PDF e obtenha o caminho completo
-        pdfService.gerarPDF(aluno,nomeArquivo);
-
-        // Aguarde a conclusão da geração do PDF (ou atualização do repositório)
-        waitForFileExistence(nomeArquivo);
+        pdfService.gerarBoasVindasPdf(aluno,nomeArquivo);
 
         var mensagem = javaMailSender.createMimeMessage();
         var helper = new MimeMessageHelper(mensagem, true);
@@ -57,37 +51,62 @@ public class EnviaEmailService {
         helper.setTo(aluno.getEmail());
         helper.setSubject(titulo);
         helper.setText(conteudo, true);
-        String caminhoCompleto = "classpath:/pdfs/" + nomeArquivo;
+        String caminhoCompleto = "PDFS/" + nomeArquivo+".pdf";
 
-        // Adicione o anexo após o arquivo PDF ser geradoC:\Users\JONATA.FESVIP\Desktop\aesthetic-academia\src\main\java\br\com\aesthetic\aesthetic\academia\PDF
-        helper.addAttachment("aluno.pdf", new File("src/main/java/br/com/aesthetic/aesthetic/academia/PDF"));
+        // Adicione o anexo após o arquivo PDF ser gerado
+        helper.addAttachment("aluno.pdf", new File(caminhoCompleto));
 
         javaMailSender.send(mensagem);
-
+        pdfService.deletarPDF(nomeArquivo);
         log.info("Email com anexo enviado com sucesso.");
-
     }
 
-    private void waitForFileExistence(String nomeArquivo) throws IOException {
-        String caminhoCompleto = "pdfs/" + nomeArquivo+".pdf"; // Caminho relativo no classpath
+    @Async
+    public void enviarEmailDeDietas(Aluno aluno, String titulo, String conteudo, List<Dieta> dietas) throws MessagingException {
+        log.info("Enviando email com anexo");
 
-        ClassPathResource resource = new ClassPathResource(caminhoCompleto);
+        String nomeArquivo = "aluno_DIETAS" + aluno.getMatricula();
+        // Gere o PDF e obtenha o caminho completo
+        pdfService.gerarPdfsDietas(aluno,dietas,nomeArquivo);
 
-        // Defina um tempo limite máximo para a espera (por exemplo, 5 minutos)
-        long tempoLimiteMillis = System.currentTimeMillis() + (1 * 60 * 1000); // 5 minutos
+        var mensagem = javaMailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(mensagem, true);
 
-        while (!resource.exists() && System.currentTimeMillis() < tempoLimiteMillis) {
-            try {
-                Thread.sleep(1000); // Aguarda 1 segundo antes de verificar novamente
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+        helper.setTo(aluno.getEmail());
+        helper.setSubject(titulo);
+        helper.setText(conteudo, true);
+        String caminhoCompleto = "PDFS/" + nomeArquivo+".pdf";
 
-        if (!resource.exists()) {
-            log.error("Tempo limite atingido. O arquivo não foi encontrado a tempo.");
-            // Aqui você pode lançar uma exceção ou tomar outra ação apropriada em caso de falha
-        }
+        // Adicione o anexo após o arquivo PDF ser gerado
+        helper.addAttachment("aluno.pdf", new File(caminhoCompleto));
+
+        javaMailSender.send(mensagem);
+        pdfService.deletarPDF(nomeArquivo);
+        log.info("Email com anexo enviado com sucesso.");
+    }
+
+    @Async
+    public void enviarEmailDeTreinos(Aluno aluno, String titulo, String conteudo, List<Treino> treinos) throws MessagingException {
+        log.info("Enviando email com anexo");
+
+        String nomeArquivo = "aluno_TREINOS" + aluno.getMatricula();
+        // Gere o PDF e obtenha o caminho completo
+        pdfService.gerarPdfsTreinos(aluno,treinos,nomeArquivo);
+
+        var mensagem = javaMailSender.createMimeMessage();
+        var helper = new MimeMessageHelper(mensagem, true);
+
+        helper.setTo(aluno.getEmail());
+        helper.setSubject(titulo);
+        helper.setText(conteudo, true);
+        String caminhoCompleto = "PDFS/" + nomeArquivo+".pdf";
+
+        // Adicione o anexo após o arquivo PDF ser gerado
+        helper.addAttachment("aluno.pdf", new File(caminhoCompleto));
+
+        javaMailSender.send(mensagem);
+        pdfService.deletarPDF(nomeArquivo);
+        log.info("Email com anexo enviado com sucesso.");
     }
 
 }

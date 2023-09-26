@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Treino implements Serializable {
@@ -19,8 +20,8 @@ public class Treino implements Serializable {
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Exercicio exercicio;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Exercicio> exercicio;
 
     public Long getId() {
         return id;
@@ -62,11 +63,11 @@ public class Treino implements Serializable {
         this.aluno = aluno;
     }
 
-    public Exercicio getExercicio() {
+    public List<Exercicio> getExercicio() {
         return exercicio;
     }
 
-    public void setExercicio(Exercicio exercicio) {
+    public void setExercicio(List<Exercicio> exercicio) {
         this.exercicio = exercicio;
     }
 }

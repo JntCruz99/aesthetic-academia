@@ -12,6 +12,7 @@ public class Exercicio implements Serializable {
     private Long id;
     private int serie;
     private int repeticoes;
+    private String diaDaSemana;
 
     @ManyToOne
     @JoinColumn(name = "treino_id")
@@ -70,6 +71,14 @@ public class Exercicio implements Serializable {
 
     public void setProfessor(Professor professor) {
         this.professor = professor;
+    }
+
+    public String getDiaDaSemana() {
+        return diaDaSemana;
+    }
+
+    public void setDiaDaSemana(String diaDaSemana) {
+        this.diaDaSemana = diaDaSemana;
     }
 }
 
